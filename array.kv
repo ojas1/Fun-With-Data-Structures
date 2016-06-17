@@ -1,0 +1,202 @@
+
+<ArrayElementWidget>:
+    val: val
+    address: address
+    index: index
+
+    #size_hint_y: .3
+    orientation: 'vertical'
+
+    canvas.before:
+        Color:
+            rgb: 0.3, 0.4, 0.6
+        Rectangle:
+            size: self.width*8/10, self.height*.1
+            pos: self.x+self.width/10, self.y + self.height*.5
+    BoxLayout:
+        size_hint_y: .3
+    Label: 
+        size_hint_y: .1
+        id: address
+        color: 0,0,0,1
+
+    Label: 
+        size_hint_y: .1
+        id: val
+
+    Label: 
+        size_hint_y: .1
+        id: index
+        color: 0,0,0,1
+    BoxLayout:
+        size_hint_y: .4
+
+<ArrayCreationWidget>:
+
+    array_size: _array_size
+
+    BoxLayout:
+        size_hint_x: .5
+        Label:
+            canvas.before:
+                Color: 
+                    rgb: 0.4, 0.5, .3
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+                
+            text: 'data type'
+        TextInput:
+            font_size: self.height/2
+            multiline: False
+        Button: 
+            text: 'enter'    
+
+    BoxLayout:
+        size_hint_x: .5
+        Label:
+            canvas.before:
+                Color: 
+                    rgb: 0.4, 0.5, .3
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            text: 'size'
+        TextInput:
+            id: _array_size
+            font_size: self.height/2
+            focus: True
+            multiline: False
+            write_tab: False
+            on_text_validate: self.parent.parent.create_array(_array_size.text)
+            text: '0'
+        Button: 
+            id: create_btn
+            text: 'enter' 
+            on_press: self.parent.parent.create_array(_array_size.text)
+
+<ArrayInsertionWidget>:
+    BoxLayout:
+        size_hint_x: .5
+        Label:
+            canvas.before:
+                Color: 
+                    rgb: 0.4, 0.5, .3
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+                
+            text: 'position'
+        TextInput:
+            focus: True
+            id: pos
+            font_size: self.height/2
+            text: ''
+            multiline: False
+            write_tab: False
+            on_text_validate: data_to_insert.focus = True
+
+    BoxLayout:
+        size_hint_x: .5
+        Label:
+            canvas.before:
+                Color: 
+                    rgb: 0.4, 0.5, .3
+                Rectangle:
+                    pos: self.pos
+                    size: self.size    
+            text: 'data'
+
+        TextInput:
+            id: data_to_insert
+            font_size: self.height/2
+            text: ''
+            multiline: False
+            write_tab: False
+            on_text_validate: self.parent.parent.insert_data(data_to_insert.text, pos.text)
+        Button: 
+            text: 'enter'    
+            on_press: self.parent.parent.insert_data(data_to_insert.text, pos.text)
+
+<ArrayDeletionWidget>:
+    delete_button: delete_button
+    pos_or_data_val: pos_or_data_val
+    BoxLayout:
+        size_hint_x: .3
+        ToggleButton:
+            text: 'data'
+            group: 'oprtn_type'
+
+        ToggleButton:
+            text: 'addr'
+            group: 'oprtn_type'
+            state: 'down'
+    BoxLayout:
+        size_hint_x: .7
+        Label:
+            canvas.before:
+                Color: 
+                    rgb: 0.4, 0.5, .3
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+                
+            text: 'data / addr'
+        TextInput:
+            id: pos_or_data_val
+            font_size: self.height/2
+            text:'5'
+            write_tab: False
+            multiline: False
+        Button: 
+            id: delete_button
+            text: 'enter'    
+
+<ArrayReplacementWidget>:
+    pos_or_data_to_replace: pos_or_data_to_replace 
+    repl_btn: repl_btn
+    replacement: replacement
+    BoxLayout:
+        size_hint_x: .2
+        ToggleButton:
+            text: 'data'
+            group: 'oprtn_type_repl'
+        ToggleButton:
+            text: 'addr'
+            group: 'oprtn_type_repl'
+            state: 'down'
+
+    BoxLayout:
+        size_hint_x: .4
+        Label:
+            canvas.before:
+                Color: 
+                    rgb: 0.4, 0.5, .3
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+                
+            text: 'data / addr'
+        TextInput:
+            multiline: False
+            write_tab: False
+            id: pos_or_data_to_replace
+            font_size: self.height/2
+
+    BoxLayout:
+        size_hint_x: .4
+        Label:
+            canvas.before:
+                Color: 
+                    rgb: 0.4, 0.5, .3
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+                
+            text: 'replace with'
+        TextInput:
+            id: replacement
+            font_size: self.height/2
+        Button: 
+            id: repl_btn
+            text: 'enter'    

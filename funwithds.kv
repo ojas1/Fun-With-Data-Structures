@@ -1,0 +1,127 @@
+#: import main visual-main
+#: import ListAdapter kivy.adapters.listadapter.ListAdapter
+
+<MenuButton>:
+    on_press: 
+        self.perform_action(self.text)
+
+<DataStrWidget>:
+
+    menu: _menu
+    ds_widget: _ds_widget
+    disp_sec: _disp_sec
+    oprtn_input: oprtn_input
+    error_messages: error_messages
+    orientation: 'vertical'
+    canvas.before:
+        Color:
+            rgb: [0.5, 0.5, 1.0]
+        Rectangle:
+            pos: 0,0
+            size: self.size   
+    canvas: 
+        Color:  
+            rgb: [.1, .2, .2]
+        Rectangle:
+            pos: 0,self.height*.8
+            size: self.width, self.height*.1
+    Button:
+        size_hint_y: .1
+        on_press: app.root.return_home()
+        text: 'VISUALIZER'
+        background_normal: ('Pastel_Red_430031_i0.png')
+        border: [0,0,0,0]
+    Label:
+        id: _ds_widget
+        size_hint_y: .1
+        pos: 0, self.height*.465
+
+    # Body
+    BoxLayout:
+        size_hint_y: .8
+
+        # Menu 
+        AnchorLayout:
+            id: _menu
+            anchor_x: 'left'
+            size_hint_x: .15
+                    
+        # Work 
+        AnchorLayout:
+            anchor_x: 'right'
+            size_hint_x: .85        
+            # Background Color
+            canvas: 
+                Color: 
+                    rgb: [1,1,1]
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+            # Items inside the Working area
+            BoxLayout:
+                orientation: 'vertical'
+
+                # Operation Input area
+                BoxLayout:
+                    id: oprtn_input
+                    size_hint_y: .1
+
+                BoxLayout:
+                    id: error_messages
+                    size_hint_y: .1
+
+                # Display Section                 
+                BoxLayout:
+                    id: _disp_sec
+                    size_hint_y: .8
+
+                    # Background Color
+                    canvas: 
+                        Color: 
+                            rgb: [1,1,1]
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+                    Label:
+                        display_label: _display_label
+                        id: _display_label                    
+                        text: ''
+                    
+<DSButton>:
+    size_hint_y: None
+    size_y: 200
+    deselected_color: 1,2,2,1
+    on_press:
+        main.current_ds = self.text 
+        app.root.go_to_the_ds(self.text)
+
+VisualRoot:
+<VisualRoot>:
+    orientation: 'vertical'
+
+    canvas.before:
+        Color:
+            rgb: [0.5, 0.5, 1.0]
+        Rectangle:
+            pos: 0,0
+            size: self.size   
+
+    canvas: 
+        Color: 
+            rgb: [1,0.41,0.38,1]
+        Rectangle: 
+            pos: 0, root.height*.9
+            size: self.size
+
+    Label:
+        size_hint_y: .1    
+        text: 'VISUALIZER'
+    
+    ListView:
+        size_hint_y: .9
+        id: ds_list
+        adapter:
+            ListAdapter(data=[], cls=main.DSButton)
+			
+        item_strings: ["Arrays", "Linked List", "Queue", "Stack", "Heap", "Tree", "Graph"]	

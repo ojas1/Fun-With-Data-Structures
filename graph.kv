@@ -1,0 +1,158 @@
+#: import ToggleButton kivy.uix.togglebutton.ToggleButton
+
+<GraphElementWidget>:
+    val: val
+    address: address
+    index: index
+
+    #size_hint_y: .3
+    orientation: 'vertical'
+
+    canvas.before:
+        Color:
+            rgb: 0.3, 0.4, 0.6
+        Rectangle:
+            size: self.width*8/10, self.height/3
+            pos: self.x+self.width/10, self.y + self.height/3
+    Label: 
+        id: address
+        color: 0,0,0,1
+
+    Label: 
+        id: val
+    Label: 
+        id: index
+        color: 0,0,0,1
+
+<GraphCreationWidget>:
+
+    graph_size: _graph_size
+
+    BoxLayout:
+        size_hint_x: .5
+        Label:
+            canvas.before:
+                Color: 
+                    rgb: 0.4, 0.5, .3
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+                
+            text: 'data type'
+        TextInput:
+            font_size: self.height/2
+        Button: 
+            text: 'enter'    
+
+    BoxLayout:
+        size_hint_x: .5
+        Label:
+            canvas.before:
+                Color: 
+                    rgb: 0.4, 0.5, .3
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            text: 'size'
+        TextInput:
+            id: _graph_size
+            font_size: self.height/2
+        Button: 
+            text: 'enter' 
+            on_press: self.parent.parent.create_graph(_graph_size.text)
+
+<GraphInsertionWidget>:
+    BoxLayout:
+        size_hint_x: .3
+
+    BoxLayout:
+        size_hint_x: .4
+        Label:
+            canvas.before:
+                Color: 
+                    rgb: 0.4, 0.5, .3
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+                
+            text: 'data'
+        TextInput:
+            font_size: self.height/2
+        Button: 
+            text: 'enter'    
+    BoxLayout:
+        size_hint_x: .3
+
+<GraphDeletionWidget>:
+
+    BoxLayout:
+        size_hint_x: .3
+        ToggleButton:
+            text: 'data'
+            group: 'oprtn_type'
+            state: 'down'
+
+        ToggleButton:
+            text: 'addr'
+            group: 'oprtn_type'
+                
+    BoxLayout:
+        size_hint_x: .7
+        Label:
+            canvas.before:
+                Color: 
+                    rgb: 0.4, 0.5, .3
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+                
+            text: 'data / addr'
+        TextInput:
+            font_size: self.height/2
+        Button: 
+            text: 'enter'    
+
+<GraphReplacementWidget>:
+
+    BoxLayout:
+        size_hint_x: .2
+        ToggleButton:
+            text: 'data'
+            group: 'oprtn_type'
+            state: 'down'
+
+        ToggleButton:
+            text: 'addr'
+            group: 'oprtn_type'
+                
+    BoxLayout:
+        size_hint_x: .4
+        Label:
+            canvas.before:
+                Color: 
+                    rgb: 0.4, 0.5, .3
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+                
+            text: 'data / addr'
+        TextInput:
+            font_size: self.height/2
+        Button: 
+            text: 'enter'    
+
+    BoxLayout:
+        size_hint_x: .4
+        Label:
+            canvas.before:
+                Color: 
+                    rgb: 0.4, 0.5, .3
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+                
+            text: 'replace with'
+        TextInput:
+            font_size: self.height/2
+        Button: 
+            text: 'enter'    

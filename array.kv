@@ -34,9 +34,7 @@
 <ArrayCreationWidget>:
 
     array_size: _array_size
-
     BoxLayout:
-        size_hint_x: .5
         Label:
             canvas.before:
                 Color: 
@@ -44,20 +42,13 @@
                 Rectangle:
                     pos: self.pos
                     size: self.size
-                
             text: 'data type'
         TextInput:
-            font_size: self.height/2
-            multiline: False
-        Button: 
-            text: 'enter'    
-
-    BoxLayout:
-        size_hint_x: .5
+            id: data_type
         Label:
             canvas.before:
-                Color: 
-                    rgb: 0.4, 0.5, .3
+                Color:
+                    rgb: 0.4, 0.5, 0.3
                 Rectangle:
                     pos: self.pos
                     size: self.size
@@ -68,12 +59,13 @@
             focus: True
             multiline: False
             write_tab: False
-            on_text_validate: self.parent.parent.create_array(_array_size.text)
-            text: '0'
+            on_text_validate: 
+                self.parent.parent.create_array(_array_size.text,data_type.text)
         Button: 
             id: create_btn
             text: 'enter' 
-            on_press: self.parent.parent.create_array(_array_size.text)
+            on_press: 
+                self.parent.parent.create_array(_array_size.text, data_type.text)
 
 <ArrayInsertionWidget>:
     BoxLayout:
@@ -150,53 +142,4 @@
             multiline: False
         Button: 
             id: delete_button
-            text: 'enter'    
-
-<ArrayReplacementWidget>:
-    pos_or_data_to_replace: pos_or_data_to_replace 
-    repl_btn: repl_btn
-    replacement: replacement
-    BoxLayout:
-        size_hint_x: .2
-        ToggleButton:
-            text: 'data'
-            group: 'oprtn_type_repl'
-        ToggleButton:
-            text: 'addr'
-            group: 'oprtn_type_repl'
-            state: 'down'
-
-    BoxLayout:
-        size_hint_x: .4
-        Label:
-            canvas.before:
-                Color: 
-                    rgb: 0.4, 0.5, .3
-                Rectangle:
-                    pos: self.pos
-                    size: self.size
-                
-            text: 'data / addr'
-        TextInput:
-            multiline: False
-            write_tab: False
-            id: pos_or_data_to_replace
-            font_size: self.height/2
-
-    BoxLayout:
-        size_hint_x: .4
-        Label:
-            canvas.before:
-                Color: 
-                    rgb: 0.4, 0.5, .3
-                Rectangle:
-                    pos: self.pos
-                    size: self.size
-                
-            text: 'replace with'
-        TextInput:
-            id: replacement
-            font_size: self.height/2
-        Button: 
-            id: repl_btn
             text: 'enter'    

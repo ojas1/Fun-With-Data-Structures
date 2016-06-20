@@ -1,28 +1,55 @@
 #: import ToggleButton kivy.uix.togglebutton.ToggleButton
-
 <TreeElementWidget>:
-    val: val
-    address: address
-    index: index
+    parent: parent
+    data: data
+    left_child: left_child
+    right_child: right_child
 
-    #size_hint_y: .3
-    orientation: 'vertical'
+    Label:
+        id: parent 
+        canvas.before:
+            Color: 
+                rgb: .3, .4, .1
+            Rectangle: 
+                size: self.size
+                pos: self.pos
+        size_hint: .1, .05
+        pos_hint: {'x':.45, 'y':.9}
+        text: 'parent'
+    Label:
+        id: data
+        canvas.before:                     
+            Color: 
+                rgb: .1, .1, .1
+            Rectangle: 
+                size: self.size
+                pos: self.pos
+        size_hint: .1, .05
+        pos: parent.pos[0], parent.pos[1] - parent.height
 
-    canvas.before:
-        Color:
-            rgb: 0.3, 0.4, 0.6
-        Rectangle:
-            size: self.width*8/10, self.height/3
-            pos: self.x+self.width/10, self.y + self.height/3
-    Label: 
-        id: address
-        color: 0,0,0,1
+    Label:
+        id: left_child
+        canvas.before:
+            Color:
+                rgb: .1, .4, .6
+            Rectangle:
+                size: self.size
+                pos: self.pos
+        size_hint: .05, .05
+        pos: parent.pos[0], data.pos[1] - data.height
+        text: 'left'
 
-    Label: 
-        id: val
-    Label: 
-        id: index
-        color: 0,0,0,1
+    Label:
+        id: right_child
+        canvas.before:
+            Color:
+                rgb: 1, 0, .1
+            Rectangle:
+                size: self.size
+                pos: self.pos
+        size_hint: .05, .05
+        pos: parent.pos[0]+left_child.width, left_child.pos[1]
+        text: 'right'
 
 <TreeCreationWidget>:
 

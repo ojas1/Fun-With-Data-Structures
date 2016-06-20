@@ -3,10 +3,10 @@ from kivy.storage.jsonstore import JsonStore
 menu_store = JsonStore('menu.json')
 ds_data = JsonStore('ds.json')
 
-menu_store.put('Arrays', menu = ['basics', 'create', 'insert', 'delete', 'replace'])
+menu_store.put('Arrays', menu = ['basics', 'create', 'insert', 'delete'])
 menu_store.put('Linked List', menu = ['basics', 'create', 'insert', 'delete', 'replace'])
-menu_store.put('Queue', menu = ['basics', 'create', 'insert', 'delete', 'replace'])
-menu_store.put('Stack', menu = ['basics', 'create', 'insert', 'delete', 'replace'])
+menu_store.put('Queue', menu = ['basics', 'create', 'insert', 'delete'])
+menu_store.put('Stack', menu = ['basics', 'create', 'insert', 'delete'])
 menu_store.put('Heap', menu = ['basics', 'create', 'insert', 'delete', 'replace'])
 menu_store.put('Tree', menu = ['basics', 'create', 'insert', 'delete', 'replace'])
 menu_store.put('Graph', menu = ['basics', 'create', 'insert', 'delete', 'replace'])

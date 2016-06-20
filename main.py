@@ -1,6 +1,7 @@
 from kivy.app import App
 from kivy.uix.widget import Widget 
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.listview import ListItemButton
 from kivy.core.window import Window
 from kivy.storage.jsonstore import JsonStore
@@ -23,6 +24,7 @@ basics_present = False
 # True after ds is created 
 ds_present = False
 ds = []
+dtype = int
 # head of the link list
 head_of_list = None
 # tail of the queue
@@ -35,19 +37,46 @@ stack_top = -1
 stack_size = 0
 # True when ds is created but not displayed
 ds_in_background = False
-
+# list of allowed dat types
+dtypes = ['int', 'str']
 def clearmsg(dt): action_widget.error_messages.clear_widgets()
+
+
+def show_error_msg(msg):
+    action_widget.error_messages.clear_widgets()
+    action_widget.error_messages.add_widget(
+            Label(text=msg, color=[0,0,0,1]))
+    Clock.schedule_once(clearmsg, 2)
+
+
+def validate_data_type(dtype, data):
+    if dtype == 'int':
+        try: 
+            data = int(data)
+            return True
+        except: return False
+    elif dtype == 'str':
+        try: 
+            data = str(data)
+            return True
+        except: return False
+    else: return False
+
 
 class ArrayElementWidget(BoxLayout):
     pass
 
 class ArrayCreationWidget(BoxLayout):
 
-    def create_array(self, size):
+    def create_array(self, size, data_type):
         try: s = int (size)
         except: return 
-        global ds_present, ds, ds_in_background
+        global ds_present, ds, dtype, ds_in_background, dtypes
         ds = []
+        dtype = data_type
+        if dtype not in dtypes:
+            show_error_msg("invaild data type")
+            return
         # Array is created and will be displayed
         ds_present = True
         ds_in_background = False
@@ -67,8 +96,11 @@ class ArrayInsertionWidget(BoxLayout):
 
     def insert_data(self, data, pos):
         if (len(ds)): 
-            if len(ds) > int(pos): ds[int(pos)].val.text = data
-
+            if len(ds) > int(pos): 
+                if validate_data_type(dtype, data) == True:
+                    ds[int(pos)].val.text = data
+                else: show_error_msg("invalid data")
+                         
 
 class ArrayDeletionWidget(BoxLayout):
 
@@ -102,13 +134,15 @@ class LLElementWidget(BoxLayout): pass
 
 class LLCreationWidget(BoxLayout):
 
-    def create_ll(self):
-        global ds, head_of_list
+    def create_ll(self, data_type):
+        global ds,dtype, head_of_list, dtypes
         ds = []
-        # Array is created and will be displayed
+        dtype = data_type.text
+        if dtype not in dtypes:
+            show_error_msg("invalid data type")
+            return 
         ds_present = True
         ds_in_background = False
-        #clear everything before displaying the new array
         action_widget.disp_sec.clear_widgets()
         ll_head = LLHeadWidget()
         head_of_list = ll_head
@@ -118,9 +152,12 @@ class LLCreationWidget(BoxLayout):
 
 
 class LLInsertionWidget(BoxLayout):
-
+    
     def insert_data_front(self, data_in_ll):
-        global ds, head_of_list
+        global ds,dtype, head_of_list
+        if validate_data_type(dtype, data_in_ll) == False:
+            show_error_msg("invalid data")
+            return 
         if head_of_list:
             action_widget.disp_sec.clear_widgets()
             # create a new LL node
@@ -128,7 +165,7 @@ class LLInsertionWidget(BoxLayout):
             #assign a random address
             new_le.node_address.text = str(int(10000*random()))
             #assign a value
-            new_le.val.text = data_in_ll.text
+            new_le.val.text = data_in_ll
             # next of the new node points to next of head
             new_le.nextptr.text = head_of_list.pointsto.text
             # head points to new node
@@ -136,12 +173,14 @@ class LLInsertionWidget(BoxLayout):
             # add the new node to the global ds list
             ds = [new_le] + ds
             action_widget.disp_sec.add_widget(head_of_list)
-            for d in range(ds):
+            for d in ds:
                 action_widget.disp_sec.add_widget(d)
 
 
     def insert_data_end(self, data_in_ll):
-        global ds, head_of_list
+        global ds,dtype, head_of_list
+        if validate_data_type(dtype, data_in_ll) == False:
+            show_error_msg("invalid data")
         if len(ds) == 0:
             self.insert_data_front(data_in_ll)
             return 
@@ -153,18 +192,20 @@ class LLInsertionWidget(BoxLayout):
             #assign a random address
             new_le.node_address.text = str(int(10000*random()))
             #assign a value
-            new_le.val.text = data_in_ll.text
+            new_le.val.text = data_in_ll
             # next of the new node points to null
             new_le.nextptr.text = 'null'
             # last node points to new node
             ds[len(ds)-1].nextptr.text = new_le.node_address.text
             # add the new node to the global ds list
             ds.append(new_le)
-            for d in range(ds): action_widget.disp_sec.add_widget(d)
+            for d in ds: action_widget.disp_sec.add_widget(d)
 
 
     def insert_data_at(self, data_in_ll, pos):
-        global ds, head_of_list
+        global ds,dtype, head_of_list
+        if validate_data_type(dtype, data_in_ll) == False:
+            show_error_msg("invalid data")
         try:
             pos = int(pos.text)-1
             data = int(data_in_ll.text)
@@ -183,7 +224,7 @@ class LLInsertionWidget(BoxLayout):
             #assign a random address
             new_le.node_address.text = str(int(10000*random()))
             #assign a value
-            new_le.val.text = data_in_ll.text
+            new_le.val.text = data_in_ll
             # next of the new node points to next of previous
             new_le.nextptr.text = ds[pos-1].nextptr.text
             ds[pos-1].nextptr.text = new_le.node_address.text
@@ -233,8 +274,11 @@ class QueueElementWidget(BoxLayout):
 class QueueCreationWidget(BoxLayout):
     def create_queue(self, size):
         action_widget.disp_sec.clear_widgets()
-        global ds
+        global ds, dtype, dtypes
         ds = []
+        if dtype not in dtypes:
+            show_error_msg("invalid data type")
+            return 
 
         for i in range(int(size)):
             nqe = QueueElementWidget()
@@ -245,14 +289,16 @@ class QueueCreationWidget(BoxLayout):
 class QueueInsertionWidget(BoxLayout):
 
     def insert_data(self, data):
-        global ds, q_tail, q_front
+        global ds, q_tail, q_front, dtype
+        if not validate_data_type(dtype, data):
+            show_error_msg("invalid data")
+            return 
         sign = 1 
         if q_tail<0: sign = -1
         q_tail +=1
         q_tail = (len(ds)+q_tail)%len(ds)
         if q_tail == q_front and sign>0:
-            action_widget.error_messages.add_widget(Label(text='queue overflow', color= [0,0,0,1]))
-            Clock.schedule_once(clearmsg, 2)
+            show_error_msg("queue overflow")
             return
         ds[q_tail].val.text = data
 
@@ -266,13 +312,16 @@ class QueueDeletionWidget(BoxLayout):
                 q_tail = -1
             else: q_front +=1 
 
-class QueueReplacementWidget(BoxLayout): pass
     
 class StackElementWidget(BoxLayout): pass
 
 class StackCreationWidget(BoxLayout):
     def create_stack(self, size):
-        global ds, stack_top, stack_size
+        global ds,dtype, stack_top, stack_size, dtypes
+        if dtype not in dtypes:
+            show_error_msg("invalid data type")
+            return 
+
         stack_size = int(size)
         if stack_size>0:
             action_widget.disp_sec.clear_widgets()
@@ -286,9 +335,13 @@ class StackInsertionWidget(BoxLayout):
 
     def push(self, data):
         global ds, stack_top, stack_size
+        if not validate_data_type(dtype, data):
+            show_error_msg("invalid data")
+            return 
         if stack_top  == stack_size-1:
             action_widget.error_messages.clear_widgets()
-            action_widget.error_messages.add_widget(Label(text='stack overflow', color= [0,0,0,1]))
+            action_widget.error_messages.add_widget(
+                    Label(text='stack overflow', color= [0,0,0,1]))
             Clock.schedule_once(clearmsg, 2)
             return
 
@@ -301,14 +354,14 @@ class StackDeletionWidget(BoxLayout):
         global ds, stack_top
         if stack_top == -1:
             action_widget.error_messages.clear_widgets()
-            action_widget.error_messages.add_widget(Label(text='stack underflow', color= [0,0,0,1]))
+            action_widget.error_messages.add_widget(
+                    Label(text='stack underflow', color= [0,0,0,1]))
             Clock.schedule_once(clearmsg, 2)
             return
         else:
             ds[stack_top].val.text = ''
             stack_top -=1
 
-class StackReplacementWidget(BoxLayout): pass
 class HeapElementWidget(BoxLayout): pass
 class HeapCreationWidget(BoxLayout):
 
@@ -319,12 +372,22 @@ class HeapCreationWidget(BoxLayout):
 class HeapInsertionWidget(BoxLayout): pass
 class HeapDeletionWidget(BoxLayout): pass
 class HeapReplacementWidget(BoxLayout): pass
-class TreeElementWidget(BoxLayout): pass
+
+class TreeElementWidget(FloatLayout): 
+    def __init__(self, *args, **kwargs):
+        super(TreeElementWidget, self).__init__(*args, **kwargs)
 
 class TreeCreationWidget(BoxLayout):
 
-    def create_tree(self, size): pass
- 
+    def create_tree(self, size):
+        elements = [1,2,3,4,5,6]
+        node = TreeElementWidget()
+        root = [elements[0],
+                None,
+                None,
+                None]
+        #action_widget.disp_sec.add_widget(node)
+         
 
 class TreeInsertionWidget(BoxLayout): pass
 class TreeDeletionWidget(BoxLayout): pass
@@ -336,6 +399,7 @@ class GraphCreationWidget(BoxLayout):
     def create_graph(self, size): pass
  
     
+
 class GraphInsertionWidget(BoxLayout): pass
 class GraphDeletionWidget(BoxLayout): pass
 class GraphReplacementWidget(BoxLayout): pass
@@ -355,10 +419,9 @@ class MenuButton(Button):
             #clear everything before displaying the content 
             action_widget.disp_sec.clear_widgets()
             # show the basics
-            action_widget.disp_sec.add_widget(
-                                            Label(
-                                                text=insert_data.ds_data.get(action_widget.ds_widget.text)[action],
-                                                color=[0,0,0,1]))
+            action_widget.disp_sec.add_widget(Label(
+                text=insert_data.ds_data.get(
+                action_widget.ds_widget.text)[action], color=[0,0,0,1]))
             # the basics section is on display and the ds is in background if present
             basics_present = True
             if ds_present: ds_in_background = True
@@ -399,26 +462,35 @@ class MenuButton(Button):
 
             if action == 'insert':
                 if current_ds == 'Arrays':
-                    action_widget.oprtn_input.add_widget(ArrayInsertionWidget())
+                    action_widget.oprtn_input.add_widget(
+                            ArrayInsertionWidget())
                 elif current_ds == 'Linked List':
-                    action_widget.oprtn_input.add_widget(LLInsertionWidget())
+                    action_widget.oprtn_input.add_widget(
+                            LLInsertionWidget())
                 elif current_ds == 'Queue':
-                    action_widget.oprtn_input.add_widget(QueueInsertionWidget())
+                    action_widget.oprtn_input.add_widget(
+                            QueueInsertionWidget())
                 elif current_ds == 'Stack':
-                    action_widget.oprtn_input.add_widget(StackInsertionWidget())
+                    action_widget.oprtn_input.add_widget(
+                            StackInsertionWidget())
                 elif current_ds == 'Heap':
-                    action_widget.oprtn_input.add_widget(HeapInsertionWidget())
+                    action_widget.oprtn_input.add_widget(
+                            HeapInsertionWidget())
                 elif current_ds == 'Tree':
-                    action_widget.oprtn_input.add_widget(TreeInsertionWidget())
+                    action_widget.oprtn_input.add_widget(
+                            TreeInsertionWidget())
                 elif current_ds == 'Graph':
-                    action_widget.oprtn_input.add_widget(GraphInsertionWidget())            
+                    action_widget.oprtn_input.add_widget(
+                            GraphInsertionWidget())            
 
             elif action == 'delete':
                 if current_ds == 'Arrays':
                     arr_del_w = ArrayDeletionWidget()
                     action_widget.oprtn_input.add_widget(arr_del_w)
-                    selected_opt = [option for option in ToggleButton.get_widgets('oprtn_type') if option.state == 'down'][0]
-                    arr_del_w.delete_button.bind(on_press = arr_del_w.delete_data)
+                    selected_opt =[option for option in ToggleButton.get_widgets(
+                        'oprtn_type') if option.state == 'down'][0]
+                    arr_del_w.delete_button.bind(
+                            on_press = arr_del_w.delete_data)
                 elif current_ds == 'Linked List':
                     action_widget.oprtn_input.add_widget(LLDeletionWidget())
                 elif current_ds == 'Queue':
@@ -436,20 +508,30 @@ class MenuButton(Button):
                 if current_ds == 'Arrays':
                     arr_repl_w = ArrayReplacementWidget()
                     action_widget.oprtn_input.add_widget(arr_repl_w)
-                    arr_repl_w.repl_btn.bind(on_press = partial(arr_repl_w.replace_data,
-                        [option for option in ToggleButton.get_widgets('oprtn_type_repl') if option.state == 'down'][0].text))
+                    arr_repl_w.repl_btn.bind(
+                            on_press = partial(
+                                arr_repl_w.replace_data,
+                        [option for option in ToggleButton.get_widgets(
+                            'oprtn_type_repl') if option.state == 'down'][0].
+                        text))
                 elif current_ds == 'Linked List':
-                    action_widget.oprtn_input.add_widget(LLReplacementWidget())
+                    action_widget.oprtn_input.add_widget(
+                            LLReplacementWidget())
                 elif current_ds == 'Queue':
-                    action_widget.oprtn_input.add_widget(QueueReplacementWidget())
+                    action_widget.oprtn_input.add_widget(
+                            QueueReplacementWidget())
                 elif current_ds == 'Stack':
-                    action_widget.oprtn_input.add_widget(StackReplacementWidget())
+                    action_widget.oprtn_input.add_widget(
+                            StackReplacementWidget())
                 elif current_ds == 'Heap':
-                    action_widget.oprtn_input.add_widget(HeapReplacementWidget())
+                    action_widget.oprtn_input.add_widget(
+                            HeapReplacementWidget())
                 elif current_ds == 'Tree':
-                    action_widget.oprtn_input.add_widget(TreeReplacementWidget())
+                    action_widget.oprtn_input.add_widget(
+                            TreeReplacementWidget())
                 elif current_ds == 'Graph':
-                    action_widget.oprtn_input.add_widget(GraphReplacementWidget())
+                    action_widget.oprtn_input.add_widget(
+                            GraphReplacementWidget())
 
 # widgets to display data structure details.
 class DataStrWidget(BoxLayout):
@@ -480,8 +562,10 @@ class VisualRoot(BoxLayout):
         w.ds_widget.text = selected_ds
         menu_box = BoxLayout(orientation='vertical')
         menu_widget = []
-        for i in range(5):
-            menu_widget.append(MenuButton(text=insert_data.menu_store.get(selected_ds)['menu'][i]))
+        menu_list = insert_data.menu_store.get(selected_ds)['menu']
+        for i in range(len(menu_list)):
+            menu_widget.append(MenuButton(
+                text=insert_data.menu_store.get(selected_ds)['menu'][i]))
             menu_box.add_widget(menu_widget[i])
         w.menu.add_widget(menu_box)
 

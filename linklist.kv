@@ -91,10 +91,11 @@
                 
             text: 'data type'
         TextInput:
+            id: data_type
             font_size: self.height/2
         Button: 
             text: 'enter' 
-            on_press: self.parent.parent.create_ll()
+            on_press: self.parent.parent.create_ll(data_type)
 
 <LLInsertionWidget>:
 
@@ -116,13 +117,13 @@
             font_size: self.height/2
         Button: 
             text: 'insert front'
-            on_press: self.parent.parent.insert_data_front(data_in_ll)
+            on_press: self.parent.parent.insert_data_front(data_in_ll.text)
         Button: 
             text: 'insert end'
-            on_press: self.parent.parent.insert_data_end(data_in_ll)
+            on_press: self.parent.parent.insert_data_end(data_in_ll.text)
         Button: 
             text: 'insert at'
-            on_press: self.parent.parent.insert_data_at(data_in_ll, data_in_ll_at_pos )
+            on_press: self.parent.parent.insert_data_at(data_in_ll.text, data_in_ll_at_pos )
                     
 <LLDeletionWidget>:
 

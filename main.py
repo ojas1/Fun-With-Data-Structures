@@ -374,19 +374,18 @@ class HeapDeletionWidget(BoxLayout): pass
 class HeapReplacementWidget(BoxLayout): pass
 
 class TreeElementWidget(FloatLayout): 
-    def __init__(self, *args, **kwargs):
-        super(TreeElementWidget, self).__init__(*args, **kwargs)
-
+    pass
 class TreeCreationWidget(BoxLayout):
 
     def create_tree(self, size):
         elements = [1,2,3,4,5,6]
-        node = TreeElementWidget()
-        root = [elements[0],
+        root = [TreeElementWidget(),elements[0],
                 None,
                 None,
                 None]
-        #action_widget.disp_sec.add_widget(node)
+        action_widget.disp_sec.clear_widgets()
+        root[0].data.text = str(elements[0])
+        action_widget.disp_sec.add_widget(root[0])
          
 
 class TreeInsertionWidget(BoxLayout): pass

@@ -44,9 +44,8 @@
                 
             text: 'data type'
         TextInput:
+            id: data_type
             font_size: self.height/2
-        Button: 
-            text: 'enter'    
 
     BoxLayout:
         size_hint_x: .5
@@ -63,7 +62,8 @@
             font_size: self.height/2
         Button: 
             text: 'enter' 
-            on_press: self.parent.parent.create_queue(queue_size.text)
+            on_press: 
+                self.parent.parent.create_queue(queue_size.text, data_type.text)
 
 <QueueInsertionWidget>:
 

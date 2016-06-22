@@ -2,6 +2,7 @@ from kivy.app import App
 from kivy.uix.widget import Widget 
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.relativelayout import RelativeLayout
 from kivy.uix.listview import ListItemButton
 from kivy.core.window import Window
 from kivy.storage.jsonstore import JsonStore
@@ -24,7 +25,7 @@ basics_present = False
 # True after ds is created 
 ds_present = False
 ds = []
-dtype = int
+dtype = 'int'
 # head of the link list
 head_of_list = None
 # tail of the queue
@@ -272,9 +273,10 @@ class QueueElementWidget(BoxLayout):
     pass
 
 class QueueCreationWidget(BoxLayout):
-    def create_queue(self, size):
+    def create_queue(self, size, data_type):
         action_widget.disp_sec.clear_widgets()
         global ds, dtype, dtypes
+        dtype = data_type
         ds = []
         if dtype not in dtypes:
             show_error_msg("invalid data type")
@@ -316,8 +318,9 @@ class QueueDeletionWidget(BoxLayout):
 class StackElementWidget(BoxLayout): pass
 
 class StackCreationWidget(BoxLayout):
-    def create_stack(self, size):
+    def create_stack(self, size, data_type):
         global ds,dtype, stack_top, stack_size, dtypes
+        dtype = data_type
         if dtype not in dtypes:
             show_error_msg("invalid data type")
             return 
@@ -373,19 +376,39 @@ class HeapInsertionWidget(BoxLayout): pass
 class HeapDeletionWidget(BoxLayout): pass
 class HeapReplacementWidget(BoxLayout): pass
 
-class TreeElementWidget(FloatLayout): 
+class TreeElementWidget(RelativeLayout):
+    def __init__(self, *args, **kwargs): 
+        super(TreeElementWidget, self).__init__(*args, **kwargs)
+        self.parent = kwargs["p"]
+        self._parent.text = str(self.parent)[:3]
+        self.lc = kwargs["lc"]
+        self._left_child.text = str(self.lc)[:3]
+        self.rc = kwargs["rc"]
+        self._right_child.text = str(self.rc)[:3]
+        self.data = kwargs["data"]
+        self._data.text = str(self.data)
+
+class TreeContainerWidget(RelativeLayout):
     pass
+
 class TreeCreationWidget(BoxLayout):
 
     def create_tree(self, size):
         elements = [1,2,3,4,5,6]
-        root = [TreeElementWidget(),elements[0],
-                None,
-                None,
-                None]
+        root = TreeElementWidget(p=None, lc=None, rc=None, data=elements[0],
+                size_hint=(.4, .2), pos_hint={'center_x':.6, 'center_y':1})
+        leftchild = TreeElementWidget(p=None, lc=None, rc=None, data=elements[1],
+                size_hint=(0.4, 0.2), pos_hint={'center_x':.3, 'center_y': .5})
+        root.lc = leftchild
+        leftchild.parent = None
+        root._left_child.text = str(root.lc)[:3]
+        leftchild._parent.text = str(root)[:3]
+        
+        tc = TreeContainerWidget(size=action_widget.disp_sec.size)
+        tc.add_widget(root)
+        tc.add_widget(leftchild)
         action_widget.disp_sec.clear_widgets()
-        root[0].data.text = str(elements[0])
-        action_widget.disp_sec.add_widget(root[0])
+        action_widget.disp_sec.add_widget(tc)
          
 
 class TreeInsertionWidget(BoxLayout): pass

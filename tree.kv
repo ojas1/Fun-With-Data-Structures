@@ -1,55 +1,54 @@
 #: import ToggleButton kivy.uix.togglebutton.ToggleButton
 <TreeElementWidget>:
-    _parent: _parent
-    data: data
-    left_child: left_child
-    right_child: right_child
-
-    Label:
-        id: _parent 
-        canvas.before:
-            Color: 
-                rgb: .3, .4, .1
-            Rectangle: 
-                size: self.size
-                pos: self.pos
-        size_hint: .1, .05
-        pos_hint: {'x':.45, 'y':.9}
-        text: 'parent'
-    Label:
-        id: data
-        canvas.before:                     
-            Color: 
-                rgb: .1, .1, .7
-            Rectangle: 
-                size: self.size
-                pos: self.pos
-        size_hint: .1, .05
-        pos: _parent.pos[0], _parent.pos[1] - _parent.height
-
-    Label:
-        id: left_child
-        canvas.before:
-            Color:
-                rgb: .1, .4, .6
-            Rectangle:
-                size: self.size
-                pos: self.pos
-        size_hint: .05, .05
-        pos: _parent.pos[0], data.pos[1] - data.height
-        text: 'left'
-
-    Label:
-        id: right_child
-        canvas.before:
-            Color:
-                rgb: 1, 0, .1
-            Rectangle:
-                size: self.size
-                pos: self.pos
-        size_hint: .05, .05
-        pos: _parent.pos[0]+left_child.width, left_child.pos[1]
-        text: 'right'
+    _parent: _parent          
+    _data: data
+    _left_child: left_child
+    _right_child: right_child
+    RelativeLayout:
+        Label:
+            id: _parent 
+            canvas.before:
+                Color: 
+                    rgb: .3, .4, .1
+                Rectangle: 
+                    size: self.size
+                    pos: self.pos
+            size_hint: .3, 0.3
+            text: 'parent'
+        Label:
+            id: data
+            canvas.before:                     
+                Color: 
+                    rgb: .1, .1, .7
+                Rectangle: 
+                    size: self.size
+                    pos: self.pos
+            size_hint: .3, .4
+            pos: _parent.pos[0], _parent.pos[1] - _parent.height
+                                                                    
+        Label:
+            id: left_child
+            canvas.before:
+                Color:
+                    rgb: .1, .4, .6
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+            size_hint: .15, .3
+            pos: _parent.pos[0], data.pos[1] - _parent.height
+            text: 'left'
+                                                                    
+        Label:
+            id: right_child
+            canvas.before:
+                Color:
+                    rgb: 1, 0, .1
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+            size_hint: .15, .3
+            pos: _parent.pos[0]+left_child.width, left_child.pos[1]
+            text: 'right'
 
 <TreeCreationWidget>:
 

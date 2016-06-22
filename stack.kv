@@ -41,12 +41,10 @@
                 
             text: 'data type'
         TextInput:
+            id: data_type
             font_size: self.height/2
             multiline: False
             write_tab: False
-
-        Button: 
-            text: 'enter'    
 
     BoxLayout:
         size_hint_x: .5
@@ -63,11 +61,13 @@
             font_size: self.height/2
             multiline: False
             write_tab: False
-            on_text_validate: self.parent.parent.create_stack(_stack_size.text)
+            on_text_validate: 
+                self.parent.parent.create_stack(_stack_size.text, data_type.text)
 
         Button: 
             text: 'enter' 
-            on_press: self.parent.parent.create_stack(_stack_size.text)
+            on_press: 
+                self.parent.parent.create_stack(_stack_size.text, data_type.text)
 
 <StackInsertionWidget>:
     BoxLayout:
